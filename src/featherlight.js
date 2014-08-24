@@ -55,6 +55,7 @@
 		closeOnEsc:   true,                   /* Close lightbox when pressing esc */
 		closeIcon:    '&#10005;',             /* Close icon */
 		otherClose:   null,                   /* Selector for alternate close buttons (e.g. "a.close") */
+    verticalFit:  false,                   /* Fit images vertically in lightbox */
 		beforeOpen:   $.noop,                 /* Called before open. can return false to prevent opening of lightbox. Gets event as parameter, this contains all data */
 		beforeClose:  $.noop,                 /* Called before close. can return false to prevent opening of lightbox. Gets event as parameter, this contains all data */
 		afterOpen:    $.noop,                 /* Called after open. Gets event as parameter, this contains all data */
@@ -189,6 +190,10 @@
 						self.setContent($content)
 							.$instance.appendTo(self.root).fadeIn(self.openSpeed);
 						self.afterOpen(event);
+
+            if (self.verticalFit /* && filter == 'image' */) {
+              self.verticalFitImage();
+            }
 					});
 					return self;
 				}
@@ -207,7 +212,16 @@
 				self.$instance.detach();
 				self.afterClose(event);
 			});
-		}
+		},
+
+    verticalFitImage: function() {
+      var self = this;
+      var $flc = $('.' + self.namespace + '-content');
+      var $fli = $('.' + self.namespace + '-image');
+
+      $fli.css('max-height', ''); // Reset max-height so scale up works correctly
+      $fli.css('max-height', $flc.height());
+    }
 	};
 
 	$.extend(Featherlight, {
@@ -227,9 +241,13 @@
 					var self = this,
 						deferred = $.Deferred(),
 						img = new Image();
-					img.onload  = function() { deferred.resolve(
-						$('<img src="'+url+'" alt="" class="'+self.namespace+'-image" />')
-					); };
+					img.onload  = function() {
+            deferred.resolve($('<img src="'+url+'" alt="" class="'+self.namespace+'-image" />'));
+
+            if (self.verticalFit) {
+              self.verticalFitImage();
+            }
+          };
 					img.onerror = function() { deferred.reject(); };
 					img.src = url;
 					return deferred.promise();

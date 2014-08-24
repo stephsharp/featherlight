@@ -56,7 +56,7 @@
 		border-bottom: 25px solid transparent;
 
 		/* dimensions: handling small or empty content */
-		min-width:  30%;
+		min-width:  10%;
 
 		/* dimensions: handling large content */
 		margin-left: 5%;
@@ -69,6 +69,9 @@
 
 		/* reset white-space wrapping */
 		white-space: normal;
+
+    /* vertically fit images */
+    max-width: 95%; /* required to make image shrink in FF */
 	}
 
 	/* contains the content */
@@ -99,8 +102,10 @@
 
 
 	.featherlight .featherlight-image {
-		/* styling */
-		width: 100%;
+    /* vertically fit images */
+    width: auto; /* required for correct image width in Chrome */
+    max-width: 100%;
+    margin: auto; /* center image if height is too small */
 	}
 
 
