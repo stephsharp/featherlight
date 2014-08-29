@@ -156,6 +156,13 @@
 			/* we need a special class for the iframe */
 			if($content.is('iframe') || $('iframe', $content).length > 0){
 				self.$instance.addClass(self.namespace+'-iframe');
+
+        // Resize iframe after content has loaded
+        $content.load(function() {
+          if (self.verticalFit) {
+            self.verticalFitIframe();
+          }
+        });
 			}
 			self.$content = $content.addClass(self.namespace+'-inner');
 
@@ -221,6 +228,31 @@
 
       $fli.css('max-height', ''); // Reset max-height so scale up works correctly
       $fli.css('max-height', $flc.height());
+    },
+
+    verticalFitIframe: function() {
+      var self = this;
+      var $flc = $('.' + self.namespace + '-content');
+      var $fli = $('.' + self.namespace + '-iframe iframe');
+
+      // http://stackoverflow.com/a/1682739/1367622
+      var width = $fli.width();
+      var height = $fli.height();
+      var contentWidth = $flc.width();
+      var contentHeight = $flc.height();
+      var newWidth, newHeight;
+
+      if (width/contentWidth < height/contentHeight) {
+        newHeight = contentHeight;
+        newWidth  = newHeight/height*width;
+      }
+      else {
+        newWidth  = contentWidth;
+        newHeight = newWidth/width*height;
+      }
+
+      $fli.css('max-width', newWidth);
+      $fli.css('max-height', newHeight);
     }
 	};
 
