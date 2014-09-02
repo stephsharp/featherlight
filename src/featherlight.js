@@ -235,6 +235,10 @@
       var $flc = $('.' + self.namespace + '-content');
       var $fli = $('.' + self.namespace + '-iframe iframe');
 
+      // Reset max height & width so scale up works correctly
+      $fli.css('max-height', '');
+      $fli.css('max-width', '');
+
       // http://stackoverflow.com/a/1682739/1367622
       var width = $fli.width();
       var height = $fli.height();
@@ -253,6 +257,16 @@
 
       $fli.css('max-width', newWidth);
       $fli.css('max-height', newHeight);
+    },
+
+    resize: function() {
+      var self = this;
+      if ($('.' + self.namespace + '-image').length > 0) {
+        self.verticalFitImage();
+      }
+      else if ($('.' + self.namespace + '-iframe').length > 0) {
+        self.verticalFitIframe();
+      }
     }
 	};
 
